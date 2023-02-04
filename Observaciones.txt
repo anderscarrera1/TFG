@@ -12,3 +12,7 @@ Conversión a CSV:
 	-La selección de etiquetas es algo rudimentaria sin utilizar Javascript, pero el funcionamiento
 	 es correcto.
 
+Almacenamiento:
+	-La carpeta donde están los archivos subidos se encuentra dentro del propio proyecto de la
+	 aplicación, por lo que tengo que borrar todos los archivos antes de subirla a github. Quizás
+	 con Javascript se pueda borrar todo el contenido cuando se cierra.
