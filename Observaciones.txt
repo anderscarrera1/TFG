@@ -1,1 +1,14 @@
-hehe
+Descarga:
+	-Es posible que al descargarla en otro dispositivo la aplicación no funcione, por algún
+	 problema en el entorno virtual y las librerías.
+
+Conversión a CSV:
+	-Originalmente usaba la función "normalize" de la librería "pandas" para aplanar el CSV,
+	 pero he tenido que hacer una función yo mismo ya que "normalize" interpretaba las listas
+	 dentro del JSON como un atributo.
+	-El archivo resultante tras la conversión es completamente plano, y no estoy seguro de que
+	 sea de mucha utilidad ya que el formato es bastante feo. De todas formas, como los JSON
+	 están tan anidados, tampoco se me ocurre ninguna otra forma para pasarlos a CSV.
+	-La selección de etiquetas es algo rudimentaria sin utilizar Javascript, pero el funcionamiento
+	 es correcto.
+
