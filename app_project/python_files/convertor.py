@@ -16,11 +16,13 @@ def deleteFiles(path):
 
     ##Se borran los elementos de la carpeta de JSON.
     for elem in os.listdir(jsonPath):
-        os.remove(jsonPath+"\\"+elem)
+        if elem.endswith('.json'):
+          os.remove(jsonPath+"\\"+elem)
 
     ##Se borran los elementos de la carpeta de CSV.
     for elem in os.listdir(csvPath):
-        os.remove(csvPath+"\\"+elem)
+        if elem.endswith('.csv'):
+          os.remove(csvPath+"\\"+elem)
 
 
 ##Función que convierte un archivo JSON a CSV aplanando todos sus campos.
@@ -127,13 +129,13 @@ def listDirectory(path):
     res = []
 
     ##Por cada elemento del csv, se añaden los que sean JSON o CSV.
-    for p in os.listdir(path):
+    for elem in os.listdir(path):
 
-        if p.endswith('.csv'):
-            res.append(p)
+        if elem.endswith('.csv'):
+            res.append(elem)
 
-        if p.endswith('.json'):
-            res.append(p)
+        if elem.endswith('.json'):
+            res.append(elem)
 
     return res
 
@@ -146,15 +148,16 @@ def listDirectoryGroup(path):
 
     ##Se añaden los elementos a una lista auxiliar y los titulos a la lista de titulos.
     for elem in os.listdir(path):
-      
-      if not any(elem[0:10] in l for l 
-      in titles):
+      if elem.endswith('.json'):
 
-        ##Se añaden los titulos a la lista de titulos.
-        titles.append(elem[0:64])
+        if not any(elem[0:10] in l for l 
+        in titles):
 
-      ##Se añaden todos los archivos a la lista auxiliar.
-      aux.append(elem)
+          ##Se añaden los titulos a la lista de titulos.
+          titles.append(elem[0:64])
+
+        ##Se añaden todos los archivos a la lista auxiliar.
+        aux.append(elem)
 
     ##Se añaden a la lista de archivos las sublistas que corresponden con los titulos.
     for elem in titles:
