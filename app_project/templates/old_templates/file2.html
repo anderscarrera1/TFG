@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ul>
+
+        {% for key, value in d.items() recursive %}
+             {% set outer = loop %}
+            <li>
+                            
+            {% if value is dict %}
+                <b>{{ key }} : </b>
+                <ul>{{ loop(value.items()) }}</ul>
+            
+            {% elif value is list %}
+
+                <b>{{ key }} : </b>
+
+                {% for elem in value %}
+                    {% if elem is dict %}
+                    
+                        <ul>{{ outer(elem.items()) }}</ul>
+
+                    {% else %}
+
+                        <ul>{{ elem }}</ul>
+
+                    {% endif %}
+                
+                {% endfor %}
+
+            {% else %}
+                <a ><b>{{ key }} : </b>{{ value }}</a>
+
+            {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+
+</body>
+</html>

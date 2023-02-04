@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #scroll{
+        border:1px solid;
+        height:300px;
+        width:1000px;
+        overflow-y:scroll;
+        overflow-x:hidden;
+    }
+    </style>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All files</title>
+</head>
+
+<h1>Archivos</h1>
+
+<body>
+     
+   <form action="{{url_for('convert')}}" method = "post">
+
+    <button type="submit" class = "btn btn-primary btn-block btn-large">Convert all</button>
+
+   </form>
+
+   <div id = scroll>
+    <table>
+      <thead>
+        <tr>
+          <th>File Name</th>
+          <th>Last Modified</th>
+          <th></th>
+          <th>File Size</th>
+        </tr>
+      </thead>
+  
+      <tbody>
+        {% for fileObj in files %}
+        <tr>
+          <td>{{fileObj['name']}}</td>
+          <td>{{fileObj['time']}}</td>
+          <td>      </td>
+          <td>{{fileObj['size']}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+  
+    </table>
+   </div>
+  
+
+</body>
+</html>

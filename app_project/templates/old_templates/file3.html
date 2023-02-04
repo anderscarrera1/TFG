@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Files</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <style>
+        #scroll{
+            border:1px solid;
+            height:500px;
+            width:1000px;
+            overflow-y:scroll;
+            overflow-x:hidden;
+        }
+        </style>
+</head>
+
+<body>
+    <ul>
+
+        {% for key, value in d.items() recursive %}
+             {% set outer = loop %}
+            <li>
+            <div class="accordion" id="accordionExample-{{loop.index}}">      
+                <div class="accordion-item">            
+                    {% if value is dict %}
+                        <h2 class="accordion-header" id="heading-{{loop.index}}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{loop.index}}" aria-expanded="false" aria-controls="collapse-{{loop.index}}">
+                                <b>{{ key }} : </b>
+                            </button>
+                        </h2>
+                        <div id="collapse-{{loop.index}}" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample-{{loop.index}}">
+                            <div class="accordion-body">
+                                <ul>{{ loop(value.items()) }}</ul>
+                            </div>
+                        </div>
+                    
+                    {% elif value is list %}
+
+                        <b>{{ key }} : </b>
+
+                        {% for elem in value %}
+                            {% if elem is dict %}
+                            
+                                <ul>{{ outer(elem.items()) }}</ul>
+
+                            {% else %}
+                                
+                                <ul>{{ elem }}</ul>
+
+                            {% endif %}
+                        
+                        {% endfor %}
+
+                    {% else %}
+                        <a ><b>{{ key }} : </b>{{ value }}</a>
+
+                    {% endif %}
+                </div>
+        </li>
+        </div>
+        {% endfor %}
+        </ul>
+
+</body>
+</html>
