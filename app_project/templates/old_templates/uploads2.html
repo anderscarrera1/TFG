@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #scroll{
+        border:1px solid;
+        height:500px;
+        width:1000px;
+        overflow-y:scroll;
+        overflow-x:hidden;
+    }
+    </style>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All files</title>
+</head>
+
+<h1>Uploaded Files</h1>
+
+<body>
+     
+   <form action="{{url_for('convert')}}" method = "post">
+
+    <button type="submit" class = "btn btn-primary btn-block btn-large">Convert all</button>
+
+   </form>
+
+   <div id = scroll>
+    <table>
+      <thead>
+        <tr>
+          <th>File Name</th>
+          <th></th>
+        </tr>
+      </thead>
+  
+      <tbody>
+        {% set count = namespace(value=0) %}
+        {% for fileObj in files %}
+        <tr>
+            <b>{{fileObj}}</b>
+            {% for fileObj2 in files2[count.value]%}
+                <br>
+                <span> &emsp; {{fileObj2}}</span>
+            {% endfor %}
+            {% set count.value = count.value + 1 %}
+            <br>
+        </tr>
+        {% endfor %}
+      </tbody>
+  
+    </table>
+   </div>
+  
+
+</body>
+</html>

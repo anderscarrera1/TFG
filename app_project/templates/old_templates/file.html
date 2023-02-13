@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ul>
+        <div>
+            <code>{
+            {% for key, value in d.items() recursive %}
+            {% if value is mapping %}
+            <p>
+             {% for it in range(loop.depth) %}&nbsp;&nbsp;{% endfor %}{{key}}: {
+            </p>
+            {{ loop(value.items()) }}
+            <p>
+              {% for it in range(loop.depth) %}&nbsp;&nbsp;{% endfor %}}
+            </p>
+            {% else %}
+            <p>
+              {% for it in range(loop.depth) %}&nbsp;&nbsp;{% endfor %}{{key}}: {{value}},
+            </p>
+            {% endif %}
+            {% endfor %}
+            }</code>
+        </div>
+        </ul>
+
+</body>
+</html>
