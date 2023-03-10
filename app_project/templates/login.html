@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File</title>
+    <style>
+        .tags ul{
+            list-style-type: none;
+        }
+        #scroll{
+            border:1px solid;
+            height:290px;
+            width:1000px;
+            overflow-y:scroll;
+            overflow-x:hidden;
+        }
+    </style>
+
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+</head>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item active">
+                <a class="nav-link" href="{{url_for('homeAdmin')}}">Home <span class="sr-only"></span></a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="{{url_for('examine')}}">Examine Files</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="{{url_for('uploadedFilesAdmin')}}">Uploaded Files</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Username
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">My Profile</a></li>
+                      <li><a class="dropdown-item" href="#">Sign Out</a></li>
+                    </ul>
+                  </li>
+            </ul>
+            </div>
+    </nav>
+    <br>
+
+    <!-- Título -->
+    <h2>Sign in to use the app!</h2>
+    <br>
+
+<body>
+    <!-- Pestañas de la página -->
+    <div class="tabs">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <!-- Pestaña Analista -->
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Log in as Analyst</button>
+          </li>
+
+          <!-- Pestaña administrador -->
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Log in as Administrator</button>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Contenido de las pestañas de la página -->
+      <div class="tab-content" id="myTabContent">
+            
+            <!-- Pestaña de analista -->
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div id = scroll>
+                    <br>
+                    <!-- Formulario de analista -->
+                    <form action="{{url_for('loginAnalyst')}}" method="POST">
+                        <div class="form-group">
+                          <label for="exampleInputEmail1">Username</label>
+                          <input type="text" class="form-control" name="username" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter username">
+                          <br>
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputPassword1">Password</label>
+                          <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="Password">
+                        </div>
+                        <div class="form-check">
+                          <input type="checkbox" name="permanent" value ="permanent" class="form-check-input" id="exampleCheck1">
+                          <label class="form-check-label" for="exampleCheck1">Remember Me</label>
+                          
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+             </div>
+             
+            <!-- Pestaña de administrador -->
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div id = scroll>
+                    <br>
+                    <!-- Formulario de administrador-->
+                    <form action="{{url_for('loginAdmin')}}" method="POST">
+                      <div class="form-group">
+                        <label for="exampleInputEmail1">Username</label>
+                        <input type="text" class="form-control" name="username" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter username">
+                        <br>
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="Password">
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" name="permanent" value ="permanent" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Remember Me</label>
+                        
+                      </div>
+                      <br>
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+              </div>
+          </div>
+      </div>
+
+    <!-- Mensaje en caso de que el login sea incorrecto -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages%}
+        {% for msg in messages %}
+          <p style="color: #ff0000">{{msg}}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</body>
+</html>

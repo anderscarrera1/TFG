@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Files</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <style>
+        #scroll{
+            border:1px solid;
+            height:500px;
+            width:1000px;
+            overflow-y:scroll;
+            overflow-x:hidden;
+        }
+    </style>
+</head>
+  
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-light">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="{{url_for('homeAdmin')}}">
+              <img src="../images/VTLogo.png" width="30" height="24">
+          </a>
+
+          <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+              <a class="nav-link" href="{{url_for('homeAdmin')}}">Home</a>
+              </li>
+              <li class="nav-item">
+              <b><a class="nav-link" href="{{url_for('uploadedFilesAdmin')}}">Uploaded Files</a></b>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" href="{{url_for('manageAccounts')}}">Manage Accounts</a>
+              </li>
+          </ul>
+          <span class="nav-item">
+              <a class="nav-link" href="{{url_for('logout')}}">Sign Out</a>
+          </span>
+          </div>
+      </div>
+    </nav>
+    <br>
+
+    <!-- Título -->
+    <h2>Uploaded Files</h2>
+    <br>
+
+<body>
+
+    <!-- Mensaje en caso de que el borrado sea correcto -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages%}
+      {% for msg in messages %}
+        <p style="color: #0f9c45">{{msg}}</p>
+      {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- Tabla con los botones -->
+    <table>
+
+        <!-- Botón para subir todos los archivos -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          Upload Files
+        </button>
+
+        &ensp;
+        
+        <!-- Formulario para borrar todos los archivos-->
+        <form action="{{url_for('deleteAdmin')}}" method = "POST">
+          <button type="submit" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete All</button> 
+        </form>
+    </table>
+    
+    <!-- Scroll que muestra todos los archivos -->
+    <div id = scroll>
+        {% set count = namespace(value=0) %}
+        {% for fileObj in files %}
+        <div class="accordion" id="accordionExample-{{count.value}}">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="heading-{{count.value}}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{count.value}}" aria-expanded="false" aria-controls="collapse-{{count.value}}">
+                  {{fileObj}}
+                </button>
+              </h2>
+              <div id="collapse-{{count.value}}" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample-{{count.value}}">
+                <div class="accordion-body">
+                    {% for fileObj2 in files2[count.value]%}
+                        <li><span><a href="{{ url_for('logAdmin', filename=fileObj2) }}">{{fileObj2}}</a></span></li>
+                    {% endfor %}
+                </div>
+              </div>
+            </div>
+        </div>
+        {% set count.value = count.value + 1 %}
+        {% endfor %}
+    </div>
+
+    <!-- Ventana modal para la subida de todos los archivos -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Upload Files</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+                <!-- Texto decorativo -->
+                <p>Select the JSON files you want to upload:</p>
+                
+                <!-- Formulario para subir archivos-->
+                <form action = "{{url_for('uploadAdmin')}}" method="POST" enctype="multipart/form-data">
+                  <div style="display: inline-block" class="mb-3 w-250">
+                    <input class="form-control" type="file" name="file" id="formFileMultiple" multiple>
+                  </div>
+
+                  <div style  ="display: inline-block">
+                    <button id="submit" type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload</button>
+                  </div>
+                </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ventana modal para borrar todos los archivos -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deletetModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="deleteModalLabel">Converting files to CSV</h1>
+          </div>
+          <div class="modal-body">
+            This might take a while...
+            <br>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- Ventana modal para subir archivos -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="uploadModalLabel">Uploading Files</h1>
+          </div>
+          <div class="modal-body">
+            This might take a while...
+            <br>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+</body>
+</html>

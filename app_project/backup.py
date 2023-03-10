@@ -1,8 +1,9 @@
 import jinja2
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 
 from flask_wtf import FlaskForm
-from wtforms import FileField, SubmitField
+from wtforms import FileField, SubmitField, StringField, PasswordField
+from wtforms.validators import InputRequired, Length, ValidationError
 
 import os
 import json
@@ -17,6 +18,7 @@ app = Flask(__name__)
 
 path=r'app_project\uploaded_files'
 app.config['UPLOAD_FOLDER']= path+"\\json\\"
+app.secret_key = "secret"
 
 
 #################################################################################################################################################################################################################
@@ -31,14 +33,56 @@ def is_list(value):
 def is_list(value):
     return isinstance(value, dict)
 
-
 #################################################################################################################################################################################################################
 ##########                                                                PÁGINAS Y FUNCIONES                                                                                 ###################################
 #################################################################################################################################################################################################################
-##Página principal.
+
+##########                  GENERALES         ###############################################################################################################################
+
+##Página para hacer el login.
 @app.route("/")
+def login():
+    return render_template("login.html")
+
+@app.route("/login", methods=["POST","GET"])
+def loginAnalyst():
+
+    if request.method=="POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        print("Username:",username)
+        print("Password:",password)
+        session["username"]=username
+        return redirect("/index")
+    else:
+        if "username" in session:
+            return redirect("/index")
+        return render_template("/")
+    
+
+@app.route("/login", methods=["POST","GET"])
+def loginAdmin():
+    username = request.form["username"]
+    password = request.form["password"]
+    print("Username:",username)
+    print("Password:",password)
+    return redirect("/index")
+
+
+@app.route("/logout", methods=["POST","GET"])
+def logout():
+    session.pop("username",None)
+    return redirect("/")
+
+
+##Página principal.
+@app.route("/index")
 def home():
-    return render_template("index.html")
+    if "username" in session:
+        username = session["username"]
+        return render_template("index.html", username=username)
+    else:
+        return redirect("/")
 
 ##Página para examinar archivos
 @app.route("/examine/")
@@ -57,7 +101,6 @@ def upload():
             for file in files:
                 aux=json.load(file)
                 DBModule.insertOne(aux,file.filename)
-                ##file.save(os.path.join(app.config['UPLOAD_FOLDER'],file.filename))
                                         
             return redirect("/uploadedFiles/")
         else:
@@ -94,17 +137,12 @@ def delete():
 def log(filename):
     
     jsonFile = DBModule.retrieveOne(filename)
-
-    """with open(path+r"\json\\"+filename) as data_file:    
-        jsonFile=json.load(data_file) """
     
     if request.method=="POST":
         tags=request.form.getlist("example")
         convertor.toCSVByTags(jsonFile, filename,tags,path)
 
-
     return render_template("file.html",name=filename,jsonFile=jsonFile)
-    
 
 ##Función principal.
 if __name__ == "__main__":

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examine Files</title>
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+  </head>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-light">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="{{url_for('homeAdmin')}}">
+              <img src="../images/VTLogo.png" width="30" height="24">
+          </a>
+
+          <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+              <a class="nav-link" href="{{url_for('homeAdmin')}}">Home</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" href="{{url_for('uploadedFilesAdmin')}}">Uploaded Files</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" href="{{url_for('manageAccounts')}}">Manage Accounts</a>
+              </li>
+          </ul>
+          <span class="nav-item">
+              <a class="nav-link" href="{{url_for('logout')}}">Sign Out</a>
+          </span>
+          </div>
+      </div>
+    </nav>
+    <br>
+
+    <h2>Examine Files</h2>
+    <br>
+
+<body>
+    <!-- Texto decorativo -->
+    <p>Select the JSON files you want to upload:</p>
+    
+    <!-- Formulario para subir archivos-->
+    <form action = "{{url_for('uploadAdmin')}}" method="POST" enctype="multipart/form-data">
+      <div style="display: inline-block" class="mb-3 w-25">
+        <input class="form-control" type="file" name="file" id="formFileMultiple" multiple>
+      </div>
+
+      <div style="display: inline-block">
+        <button id="submit" type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload</button>
+      </div>
+
+    </form>
+
+    <!-- Ventana modal para subir archivos -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="uploadModalLabel">Uploading Files</h1>
+            </div>
+            <div class="modal-body">
+              This might take a while...
+              <br>
+            </div>
+  
+          </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

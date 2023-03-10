@@ -2,13 +2,10 @@ import csv
 import json
 import os
 import glob
-import shutil
 
 import numpy as np
 import pandas as pd
 import pathlib
-
-from python_files import DBModule
 
 
 ##Función que borra todos los archivos subidos a la aplicación.
@@ -17,19 +14,15 @@ def deleteFiles(path):
     jsonPath=path+r"\json"
     csvPath=path+r"\csv"
 
-    """##Se borran los elementos de la carpeta de JSON.
+    ##Se borran los elementos de la carpeta de JSON.
     for elem in os.listdir(jsonPath):
         if elem.endswith('.json'):
-          os.remove(jsonPath+"\\"+elem)"""
+          os.remove(jsonPath+"\\"+elem)
 
-    ##Se borran los CSV de la carpeta de CSV.
+    ##Se borran los elementos de la carpeta de CSV.
     for elem in os.listdir(csvPath):
         if elem.endswith('.csv'):
           os.remove(csvPath+"\\"+elem)
-
-    ##Se borran las carpetas de la carpeta de CSV.
-    for elem in os.listdir(csvPath):
-          shutil.rmtree(csvPath+"\\"+elem)
 
 
 ##Función que convierte un archivo JSON a CSV aplanando todos sus campos.
@@ -58,18 +51,17 @@ def toCSV(jsonFile, name=''):
               flatten(e,name+elem+str(cont)+".")
 
             ##Si el elemento es un valor, se añade al resultado.  
-            else:            
-              if elem != "_id":
-                columns.append(name+elem+str(cont))
-                rows.append(e)
+            else:             
+              columns.append(name+elem+str(cont))
+              rows.append(e)
               
             cont+=1
 
         ##Si el elemento es un valor, se añade al resultado.  
         else:
-          if elem != "_id":
-            columns.append(name+elem)
-            rows.append(jsonFile[elem])
+
+          columns.append(name+elem)
+          rows.append(jsonFile[elem])
        
        return {"rows":rows,"columns":columns}
         
@@ -121,16 +113,9 @@ def toCSVByTags(jsonFile, filename, tags, path,name=''):
        return {"rows":rows,"columns":columns}   
 
     fjson = flattenByTags(jsonFile,name) 
-  
-    ##Se crea un directorio con el nombre del archivo en caso de que no exista.
-    if not os.path.exists(path+r"\csv\\"+filename[0:64]):
-        os.makedirs(path+r"\csv\\"+filename[0:64])
-
-    ##Directorio donde se va a guardar el elemento.
-    currentPath=path+r"\csv\\"+filename[0:64]+"\\"+filename.replace(".json", "")+".csv"
-
-    ##Se crea al writer y se guardan los elementos aplanados como CSV.
-    with open(currentPath, 'w',encoding="utf-8") as f:
+    
+    ##Se abre un writer y se guarda el archivo aplanado como csv.
+    with open(path+r"\csv\\"+filename.replace(".json", "")+".csv", 'w',encoding="utf-8") as f:
       write = csv.writer(f)
       
       write.writerow(fjson["columns"])
@@ -156,31 +141,28 @@ def listDirectory(path):
 
 
 ##Función que lee un directorio y devuelve una lista de listas con los archivos y otra con el nombre en comun de esos los archivos pertenecientes a la sublista.
-def listDirectoryGroup():
+def listDirectoryGroup(path):
     titles = []
     aux=[]
     files = []
 
-    ##Se obtienen los elementos de la base de datos.
-    BDObjects=DBModule.retrieveAllNames()
-
     ##Se añaden los elementos a una lista auxiliar y los titulos a la lista de titulos.
-    for elem in BDObjects:
-      if elem["_id"].endswith('.json'):
+    for elem in os.listdir(path):
+      if elem.endswith('.json'):
 
-        if not any(elem["_id"][0:10] in l for l 
+        if not any(elem[0:10] in l for l 
         in titles):
 
           ##Se añaden los titulos a la lista de titulos.
-          titles.append(elem["_id"][0:64])
+          titles.append(elem[0:64])
 
         ##Se añaden todos los archivos a la lista auxiliar.
-        aux.append(elem["_id"])
+        aux.append(elem)
 
     ##Se añaden a la lista de archivos las sublistas que corresponden con los titulos.
-    for elem["_id"] in titles:
+    for elem in titles:
       matches = [l for l in aux 
-      if elem["_id"] in l]
+      if elem in l]
 
       files.append(matches)
 
@@ -190,32 +172,22 @@ def listDirectoryGroup():
 ##Función que transforma todos los archivos json de un directorio a csv.
 def transformAll(path):
     
-    res= DBModule.retrieveAll()
+    ##Llamada a la función "listDirectory()" para obtener los elementos del directorio.
+    res=listDirectory(path+"\json")
     
     ##Se itera sobre cada elemento del directorio.
     for elem in res:
-      fjson=toCSV(elem)
 
-      ##Se crea un directorio con el nombre del archivo en caso de que no exista.
-      if not os.path.exists(path+r"\csv\\"+elem["_id"][0:64]):
-         os.makedirs(path+r"\csv\\"+elem["_id"][0:64])
+      ##Se abre el el primer archivo como json y se aplana con la función "toCSV()".
+      with open(path+r"\json\\"+elem) as json_file:
+        j= json.load(json_file)
 
-      ##Directorio donde se va a guardar el elemento.
-      currentPath=path+r"\csv\\"+elem["_id"][0:64]+"\\"+elem["_id"].replace(".json", "")+".csv"
+      fjson=toCSV(j)
 
-      ##Se crea al writer y se guardan los elementos aplanados como CSV.
-      with open(currentPath, 'w',encoding="utf-8") as f:
+      ##se crea al writer y se guardan los elementos aplanados como CSV.
+      
+      with open(path+r"\csv\\"+elem.replace(".json", "")+".csv", 'w',encoding="utf-8") as f:
         write = csv.writer(f)
         
         write.writerow(fjson["columns"])
         write.writerow(fjson["rows"])
-
-
-##Función que transforma los archivos de un lote a csv.
-def transformBatch(type,tags,path):    
-    res= DBModule.retrieveByType(type)
-    
-    ##Se itera sobre cada elemento del directorio y se le aplica la función toCSVByTags.
-    for elem in res:
-      toCSVByTags(elem,elem["_id"],tags,path)
-
